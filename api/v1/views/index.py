@@ -24,3 +24,7 @@ def stats() -> str:
     stats = {}
     stats['users'] = User.count()
     return jsonify(stats)
+
+def unauthorized_endpoint():
+    """Raise a 401 error using abort"""
+    abort(401)
