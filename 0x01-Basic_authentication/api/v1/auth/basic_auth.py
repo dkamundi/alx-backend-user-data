@@ -98,3 +98,27 @@ class BasicAuth(Auth):
                 return user
 
         return None
+    def current_user(self, request=None) -> TypeVar('User'):
+        """
+        Retrieve the User instance for a request using Basic Authentication.
+
+        You must use authorization_header.
+        You must use extract_base64_authorization_header.
+        You must use decode_base64_authorization_header.
+        You must use extract_user_credentials.
+        You must use user_object_from_credentials.
+
+        With this update, now your API is fully protected by Basic Authentication. Enjoy!
+        """
+        if requests is None:
+            return None
+
+        authorization_header = self.authorization_header(request)
+
+        base64_authorization_header = self.extract_base64_authorized_header(authorization_header)
+
+        decoded_authorization_header = self.decode_base64_authorization_header(base64_authorization_header)
+
+        user_email, user_pwd = self.extract_user_credentials(decoded_authorization_header)
+
+        user = self.user_object_from_credentials(user_email, user_pwd)
