@@ -3,6 +3,7 @@
 Basic auth
 """
 
+import base64
 from api.v1.auth.auth import Auth
 
 
@@ -28,3 +29,22 @@ class BasicAuth(Auth):
         base64_value = authorization_header.replace('Basic ', '', 1)
 
         return base64_value
+
+    def decode_base64_authorization_header(self, base64_authorization_header: str) -> str:
+        """
+        Decode the Base64 authorization header.
+
+        Return None if base64_authorization_header is None.
+        Return None if base64_authorization_header is not a string.
+        Return None if base64_authorization_header is not a valid Base64 - you can use try/except.
+        Otherwise, return the decoded value as UTF8 string - you can use decode('utf-8').
+        """
+        if base64_authorization_header is None or not isinstance(base64_authorization_header, str):
+            return None
+
+        try:
+            # Decode Base64 and convert to UTF-8
+            decoded_value = base64.b64decode(base64_authorization_header).decode('utf-8')
+            return decoded_value
+        except base64.binascii.Error:
+            return None
