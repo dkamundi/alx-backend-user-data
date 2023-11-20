@@ -9,6 +9,42 @@ Functions:
 
 import re
 from typing import List
+import logging
+
+
+class RedactingFormatter(logging.Formatter):
+    """ Redacting Formatter class
+        """
+
+    REDACTION = "***"
+    FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
+    SEPARATOR = ";"
+
+    def __init__(self, fields: List[str] = None):
+        """
+        Initialize RedactingFormatter with a list of fields to redact.
+
+        Args:
+            fields (list): List of strings representing fields to redact.
+        """    
+        super(RedactingFormatter, self).__init__(self.FORMAT)
+        self.fields = fields
+
+    def format(self, record: logging.LogRecord) -> str:
+        """
+        Format log record and redact specified fields.
+
+        Args:
+            record (logging.LogRecord): Log record to format.
+
+        Returns:
+            str: Formatted and redacted log message.
+        """
+        msg = logging.Formatter(self.FORMAT).format(record)
+        result = filter_datum(self.fields, self.REDACTION, msg, self.SEPARATOR)
+        
+        return result
+
 
 def filter_datum(
         fields: List[str], redaction: str, message: str, separator: str) -> str:
