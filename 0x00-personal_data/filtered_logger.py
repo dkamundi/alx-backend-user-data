@@ -10,7 +10,10 @@ Functions:
 import re
 from typing import List
 import logging
+import csv
+from logging.handlers import RotatingFileHandler
 
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
 class RedactingFormatter(logging.Formatter):
     """ Redacting Formatter class
@@ -66,6 +69,23 @@ def filter_datum(
 
     return message
 
+def get_logger() -> logging.Logger:
+    """
+    Create and configure a logger named "user_data".
+
+    Returns:
+        logging.Logger: Configured logger.
+    """
+    logger = logging.getLocker("user_data")
+    logger.setLevel(logging.INFO)
+
+    formatter = RedactingFormatter(fields=PII_FIELDS)
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(formatter)
+
+    logger.addHandler(stream_handler)
+
+    return logger
 
 if __name__ == "__main__":
     main()
