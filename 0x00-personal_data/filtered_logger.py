@@ -12,6 +12,8 @@ from typing import List
 import logging
 import csv
 from logging.handlers import RotatingFileHandler
+import os
+import mysql.connector
 
 PII_FIELDS = ("name", "email", "phone", "ssn", "password")
 
@@ -86,6 +88,23 @@ def get_logger() -> logging.Logger:
     logger.addHandler(stream_handler)
 
     return logger
+
+def get_db() ->  mysql.connector.connection.MySQLConnection:
+    """
+    Get a connection to the MySQL database using credentials from environment variables.
+
+    Returns:
+        mysql.connector.connection.MySQLConnection: Database connector.
+    """
+    db_connection = mysql.connector.connection(
+            username = os.getenv("PERSONAL_DATA_DB_USERNAME", "root")
+            password = os.getenv("PERSONAL_DATA_DB_PASSWORD", "")
+            host = os.getenv("PERSONAL_DATA_DB_HOST", "localhost")
+            name = os.getenv("PERSONAL_DATA_DB_NAME")
+            )
+
+    return db_connection
+
 
 if __name__ == "__main__":
     main()
